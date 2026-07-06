@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miss You MP3</title>
+
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Caveat:wght@500&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'VT323',monospace;
+}
+
+body{
+  background:#1f2329;
+  background-image:radial-gradient(circle at 50% 0%, #2a2f38, #1f2329 60%);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:40px 20px;
+  gap:14px;
+}
+
+.note{
+  font-family:'Caveat',cursive;
+  color:#8a8f96;
+  font-size:22px;
+}
+
+.player{
+  width:360px;
+  background:linear-gradient(160deg,#f3efe6,#e6dfd2);
+  border-radius:38px;
+  padding:22px 24px 20px;
+  box-shadow:
+    0 25px 50px rgba(0,0,0,.45),
+    inset 0 0 0 1px rgba(255,255,255,.6),
+    inset 0 2px 6px rgba(255,255,255,.9);
+  position:relative;
+}
+
+.camDot{
+  width:60px;
+  height:8px;
+  background:#3a3a3a;
+  border-radius:6px;
+  margin:0 auto 10px;
+  opacity:.85;
+}
+
+.title{
+  text-align:center;
+  font-size:30px;
+  letter-spacing:3px;
+  color:#2c2c2c;
+  margin-bottom:14px;
+}
+
+.title .heartIcon{
+  color:#7a1f2b;
+}
+
+/* ---------- SCREEN ---------- */
+
+.screen{
+  background:#3a3a3a;
+  border-radius:20px;
+  padding:8px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
+}
+
+.lcd{
+  background:linear-gradient(160deg,#dbe4cb,#c9d3b8);
+  border-radius:13px;
+  height:330px;
+  padding:16px 16px 12px;
+  position:relative;
+  overflow:hidden;
+  color:#2f3a26;
+}
+
+.status{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:20px;
+  color:#33402c;
+  margin-bottom:6px;
+}
+
+.status .right{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.battery{
+  width:26px;
+  height:14px;
+  border:2px solid #33402c;
+  border-radius:3px;
+  position:relative;
+  display:inline-block;
+}
+.battery::after{
+  content:"";
+  position:absolute;
+  right:-5px;
+  top:3px;
+  width:3px;
+  height:6px;
+  background:#33402c;
+  border-radius:0 2px 2px 0;
+}
+.battery i{
+  position:absolute;
+  top:1px;
+  bottom:1px;
+  left:1px;
+  background:#33402c;
+  border-radius:1px;
+}
+
+/* PAGES */
+
+.page{ display:none; height:100%; }
+.page.active{ display:flex; flex-direction:column; height:calc(100% - 26px); }
+
+/* ---- HOME PAGE ---- */
+
+#homePage{ align-items:center; text-align:center; }
+
+.heartWrap{
+  position:relative;
+  margin-top:6px;
+  height:100px;
+}
+
+.bigHeart{
+  font-size:80px;
+  line-height:1;
+  color:#33402c;
+  filter:drop-shadow(1px 1px 0 rgba(0,0,0,.15));
+}
+
+.deco{
+  position:absolute;
+  font-size:22px;
+  color:#4a5a3f;
+  opacity:.8;
+}
+.deco.d1{ top:-4px; left:14px; }
+.deco.d2{ top:36px; right:10px; }
+.deco.d3{ bottom:-6px; left:26px; }
+
+.homeTitle{
+  font-size:34px;
+  letter-spacing:2px;
+  margin:6px 0 4px;
+  color:#26311f;
+}
+
+.homeSub{
+  font-size:19px;
+  line-height:22px;
+  color:#4a5a3f;
+  max-width:220px;
+}
+
+.menuList{
+  margin-top:auto;
+  width:100%;
+  background:#4c5b45;
+  border-radius:10px;
+  overflow:hidden;
+  font-size:24px;
+}
+
+.menuList .item{
+  padding:9px 14px;
+  color:#e9ecdf;
+  text-align:left;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.menuList .item.active{
+  background:#2c3728;
+  color:#fff;
+}
+
+/* ---- MESSAGE PAGE ---- */
+
+#messagePage{ height:100%; }
+
+.fromBar{
+  background:#e4ead6;
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:19px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+  color:#33402c;
+}
+
+.messageBody{
+  font-size:19px;
+  line-height:24px;
+  overflow-y:auto;
+  flex:1;
+  padding-right:6px;
+  color:#2c3620;
+}
+
+.messageBody::-webkit-scrollbar{ width:5px; }
+.messageBody::-webkit-scrollbar-thumb{ background:#7d8a70; border-radius:3px; }
+
+/* ---- GALLERY PAGE ---- */
+
+#galleryPage{ height:100%; }
+
+.galleryLabel{
+  background:#e4ead6;
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:19px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+  color:#33402c;
+}
+
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+}
+
+.gallery img{
+  width:100%;
+  height:64px;
+  object-fit:cover;
+  border-radius:6px;
+  border:2px solid #3a4531;
+  display:block;
+}
+
+.pageNav{
+  margin-top:auto;
+  text-align:center;
+  font-size:18px;
+  color:#33402c;
+  padding-top:6px;
+}
+
+/* ---- PLAYLIST PAGE ---- */
+
+#playlistPage{ height:100%; }
+
+.playlistLabel{
+  background:#e4ead6;
+  border-radius:8px;
+  padding:8px 12px;
+  font-size:19px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+  color:#33402c;
+}
+
+.trackList{
+  flex:1;
+  overflow-y:auto;
+  padding-right:4px;
+}
+
+.trackList::-webkit-scrollbar{ width:5px; }
+.trackList::-webkit-scrollbar-thumb{ background:#7d8a70; border-radius:3px; }
+
+.track{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:8px;
+  font-size:19px;
+  color:#2c3620;
+  cursor:pointer;
+}
+
+.track .num{
+  width:18px;
+  opacity:.7;
+  flex-shrink:0;
+}
+
+.track .name{
+  flex:1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.track.playing{
+  background:#4c5b45;
+  color:#fff;
+}
+.track.playing .num{ opacity:1; }
+
+.emptyTracks{
+  text-align:center;
+  color:#5a6650;
+  font-size:18px;
+  margin-top:30px;
+  line-height:24px;
+}
+
+.addTrackBtn{
+  margin-top:6px;
+  text-align:center;
+  background:#4c5b45;
+  color:#e9ecdf;
+  border-radius:8px;
+  padding:8px;
+  font-size:19px;
+  cursor:pointer;
+}
+
+/* ---- FOOTER NAV (message/gallery) ---- */
+
+.screenFooter{
+  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:18px;
+  color:#33402c;
+  padding:0 2px;
+}
+
+.screenFooter span{ cursor:pointer; }
+
+/* ---------- BELOW SCREEN ---------- */
+
+.deviceLabel{
+  text-align:center;
+  margin-top:16px;
+  font-size:22px;
+  letter-spacing:1px;
+  color:#2c2c2c;
+}
+
+.deviceCaption{
+  text-align:center;
+  font-size:15px;
+  letter-spacing:3px;
+  color:#8a8578;
+  margin-bottom:18px;
+}
+
+/* ---------- CLICK WHEEL ---------- */
+
+.wheel{
+  width:210px;
+  height:210px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fbfaf7, #d6d2c8 75%);
+  margin:0 auto;
+  position:relative;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.08),
+    inset 0 -4px 10px rgba(0,0,0,.12),
+    0 6px 14px rgba(0,0,0,.25);
+}
+
+.menuBtn{
+  position:absolute;
+  top:16px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:22px;
+  letter-spacing:1px;
+  color:#555;
+  cursor:pointer;
+  user-select:none;
+}
+
+.volBtn{
+  position:absolute;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:22px;
+  letter-spacing:2px;
+  color:#555;
+  cursor:pointer;
+  user-select:none;
+}
+
+.prevBtn, .nextBtn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:24px;
+  color:#555;
+  cursor:pointer;
+  user-select:none;
+}
+.prevBtn{ left:20px; }
+.nextBtn{ right:20px; }
+
+.playBtn{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:78px;
+  height:78px;
+  background:#fff;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:26px;
+  color:#2c2c2c;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(0,0,0,.2), inset 0 0 0 1px rgba(0,0,0,.05);
+  user-select:none;
+}
+
+.footer{
+  text-align:center;
+  margin-top:16px;
+  font-size:14px;
+  letter-spacing:1px;
+  color:#6b6b6b;
+}
+
+</style>
+</head>
+<body>
+
+<div class="note">always thinking of you ♡</div>
+
+<div class="player">
+
+  <div class="camDot"></div>
+
+  <div class="title">MISS U <span class="heartIcon">♥</span></div>
+
+  <div class="screen">
+    <div class="lcd">
+
+      <div class="status">
+        <span id="statusLeft">♪ 00:00</span>
+        <span class="right"><span class="battery"><i style="width:16px"></i></span></span>
+      </div>
+
+      <!-- HOME PAGE -->
+      <div class="page active" id="homePage">
+        <div class="heartWrap">
+          <span class="deco d1">+</span>
+          <span class="deco d2">♪</span>
+          <span class="deco d3">↕</span>
+          <div class="bigHeart">♥</div>
+        </div>
+        <div class="homeTitle">I MISS YOU</div>
+        <div class="homeSub">some people just<br>stay in your heart.</div>
+
+        <div class="menuList">
+          <div class="item active" data-target="message" onclick="showPage('message')">▶ MESSAGE</div>
+          <div class="item" data-target="gallery" onclick="showPage('gallery')">GALERI</div>
+          <div class="item" data-target="playlist" onclick="showPage('playlist')">PLAYLIST</div>
+        </div>
+      </div>
+
+      <!-- MESSAGE PAGE -->
+      <div class="page" id="messagePage">
+        <div class="fromBar"><span>from: someone special</span><span>♥</span></div>
+        <div class="messageBody">
+          hey,<br>
+          just a little reminder... you're constantly on my mind.
+          <br><br>
+          i miss our talks,<br>
+          our laughs,<br>
+          our everything.
+          <br><br>
+          can't wait to see you again.
+          <br><br>
+          - always, me ♥
+        </div>
+        <div class="screenFooter">
+          <span onclick="showPage('home')">◀ BACK</span>
+          <span>♥</span>
+          <span onclick="showPage('home')">HOME ▶</span>
+        </div>
+      </div>
+
+      <!-- GALLERY PAGE -->
+      <div class="page" id="galleryPage">
+        <div class="galleryLabel"><span>memories</span><span>♥</span></div>
+        <div class="gallery">
+          <img src="https://picsum.photos/200?1">
+          <img src="https://picsum.photos/200?2">
+          <img src="https://picsum.photos/200?3">
+          <img src="https://picsum.photos/200?4">
+          <img src="https://picsum.photos/200?5">
+          <img src="https://picsum.photos/200?6">
+          <img src="https://picsum.photos/200?7">
+          <img src="https://picsum.photos/200?8">
+          <img src="https://picsum.photos/200?9">
+        </div>
+        <div class="pageNav">1 / 3 &nbsp;▶</div>
+        <div class="screenFooter">
+          <span onclick="showPage('home')">◀ BACK</span>
+          <span>♥</span>
+          <span onclick="showPage('home')">HOME ▶</span>
+        </div>
+      </div>
+
+      <!-- PLAYLIST PAGE -->
+      <div class="page" id="playlistPage">
+        <div class="playlistLabel"><span>daftar lagu</span><span>♥</span></div>
+        <div class="trackList" id="trackList">
+          <div class="emptyTracks" id="emptyTracks">belum ada lagu.<br>tekan "+ tambah lagu" di bawah.</div>
+        </div>
+        <div class="addTrackBtn" onclick="document.getElementById('fileInput').click()">+ tambah lagu</div>
+        <div class="screenFooter">
+          <span onclick="showPage('home')">◀ BACK</span>
+          <span>♥</span>
+          <span onclick="showPage('home')">HOME ▶</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="deviceLabel">MP3 PLAYER</div>
+  <div class="deviceCaption">DIGITAL LOVE STORAGE</div>
+
+  <div class="wheel">
+    <div class="menuBtn" onclick="showPage('home')">MENU</div>
+    <div class="prevBtn" id="prevBtn">⏮</div>
+    <div class="playBtn" id="playBtn">▶</div>
+    <div class="nextBtn" id="nextBtn">⏭</div>
+    <div class="volBtn" id="volBtn">VOL</div>
+  </div>
+
+  <input type="file" id="fileInput" accept="audio/*" multiple style="display:none">
+
+</div>
+
+<div class="note">press play to feel ♡</div>
+
+<script>
+
+/* ---------- NAVIGATION ---------- */
+
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".menuList .item").forEach(i=>i.classList.remove("active"));
+
+  const statusLeft = document.getElementById("statusLeft");
+
+  if(page==="home"){
+    document.getElementById("homePage").classList.add("active");
+    updateStatusTime();
+  }
+  if(page==="message"){
+    document.getElementById("messagePage").classList.add("active");
+    document.querySelector('.item[data-target="message"]').classList.add("active");
+    statusLeft.textContent = "♪ MESSAGE";
+  }
+  if(page==="gallery"){
+    document.getElementById("galleryPage").classList.add("active");
+    document.querySelector('.item[data-target="gallery"]').classList.add("active");
+    statusLeft.textContent = "♪ GALERI";
+  }
+  if(page==="playlist"){
+    document.getElementById("playlistPage").classList.add("active");
+    document.querySelector('.item[data-target="playlist"]').classList.add("active");
+    statusLeft.textContent = "♪ PLAYLIST";
+  }
+}
+
+/* ---------- AUDIO PLAYER + PLAYLIST ---------- */
+
+const audio = new Audio();
+audio.preload = "metadata";
+
+const playBtn    = document.getElementById("playBtn");
+const prevBtn    = document.getElementById("prevBtn");
+const nextBtn    = document.getElementById("nextBtn");
+const volBtn     = document.getElementById("volBtn");
+const fileInput  = document.getElementById("fileInput");
+const statusLeft = document.getElementById("statusLeft");
+const trackList  = document.getElementById("trackList");
+const emptyTracks= document.getElementById("emptyTracks");
+
+// daftar lagu: tiap item {name, url}
+// kalau kamu sudah punya file lagu tetap, bisa langsung isi array ini, contoh:
+// let playlist = [{ name:"Nama Lagu 1", url:"lagu1.mp3" }, { name:"Nama Lagu 2", url:"lagu2.mp3" }];
+let playlist = [];
+let currentIndex = -1;
+let muted = false;
+
+function formatTime(sec){
+  if(isNaN(sec)) return "00:00";
+  const m = Math.floor(sec/60).toString().padStart(2,"0");
+  const s = Math.floor(sec%60).toString().padStart(2,"0");
+  return m+":"+s;
+}
+
+function updateStatusTime(){
+  // hanya tampilkan waktu berjalan saat berada di halaman home
+  if(document.getElementById("homePage").classList.contains("active")){
+    statusLeft.textContent = "♪ " + formatTime(audio.currentTime || 0);
+  }
+}
+
+function renderPlaylist(){
+  trackList.innerHTML = "";
+  if(playlist.length === 0){
+    trackList.appendChild(emptyTracks);
+    return;
+  }
+  playlist.forEach((track, i) => {
+    const row = document.createElement("div");
+    row.className = "track" + (i === currentIndex ? " playing" : "");
+    row.innerHTML =
+      '<span class="num">' + (i === currentIndex ? "♪" : (i+1)) + '</span>' +
+      '<span class="name">' + track.name + '</span>' +
+      '<span>' + (i === currentIndex && !audio.paused ? "❚❚" : "▶") + '</span>';
+    row.onclick = () => loadTrack(i);
+    trackList.appendChild(row);
+  });
+}
+
+function loadTrack(i, autoplay = true){
+  if(i < 0 || i >= playlist.length) return;
+  currentIndex = i;
+  audio.src = playlist[i].url;
+  if(autoplay) audio.play().catch(()=>{});
+  renderPlaylist();
+}
+
+playBtn.addEventListener("click", () => {
+  if(playlist.length === 0){
+    fileInput.click();
+    return;
+  }
+  if(currentIndex === -1){
+    loadTrack(0);
+    return;
+  }
+  if(audio.paused){
+    audio.play().catch(()=>{});
+  } else {
+    audio.pause();
+  }
+});
+
+fileInput.addEventListener("change", (e) => {
+  const files = Array.from(e.target.files);
+  if(files.length === 0) return;
+  const startIndex = playlist.length;
+  files.forEach(file => {
+    const name = file.name.replace(/\.[^/.]+$/, "");
+    playlist.push({ name: name, url: URL.createObjectURL(file) });
+  });
+  renderPlaylist();
+  if(currentIndex === -1) loadTrack(startIndex);
+  fileInput.value = "";
+});
+
+audio.addEventListener("play", () => { playBtn.textContent = "❚❚"; renderPlaylist(); });
+audio.addEventListener("pause", () => { playBtn.textContent = "▶"; renderPlaylist(); });
+audio.addEventListener("ended", () => {
+  playBtn.textContent = "▶";
+  if(playlist.length > 0) loadTrack((currentIndex + 1) % playlist.length);
+});
+
+audio.addEventListener("timeupdate", updateStatusTime);
+
+prevBtn.addEventListener("click", () => {
+  if(playlist.length === 0) return;
+  loadTrack((currentIndex - 1 + playlist.length) % playlist.length);
+});
+
+nextBtn.addEventListener("click", () => {
+  if(playlist.length === 0) return;
+  loadTrack((currentIndex + 1) % playlist.length);
+});
+
+volBtn.addEventListener("click", () => {
+  muted = !muted;
+  audio.muted = muted;
+  volBtn.style.opacity = muted ? .4 : 1;
+});
+
+</script>
+
+</body>
+</html>
