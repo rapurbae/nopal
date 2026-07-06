@@ -176,10 +176,11 @@ body{
 
 .menuList{
   margin-top:auto;
+  max-height:100px;
   width:100%;
   background:#4c5b45;
   border-radius:10px;
-  overflow:hidden;
+  overflow-y:auto;
   font-size:24px;
 }
 
@@ -337,6 +338,10 @@ body{
   padding:8px;
   font-size:19px;
   cursor:pointer;
+}
+
+  .menuList::-webkit-scrollbar{
+    display:none;
 }
 
 /* ---- FOOTER NAV (message/gallery) ---- */
